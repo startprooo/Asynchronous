@@ -1,0 +1,62 @@
+[core]
+    editor = vim
+    fileMode = true
+    symlinks = false
+    autocrlf = input
+    whitespace = trailing-space,space-before-tab
+    pager = less -FRX
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true
+
+[fetch]
+    prune = true
+
+[color]
+    ui = auto
+
+[diff]
+    tool = vimdiff
+    colorMoved = default
+
+[merge]
+    tool = vimdiff
+    conflictstyle = diff3
+
+[commit]
+    gpgsign = true
+
+[tag]
+    gpgSign = true
+
+[gpg]
+    program = gpg
+
+[status]
+    showUntrackedFiles = all
+
+[alias]
+    st = status
+    ci = commit
+    co = checkout
+    br = branch
+    unstage = reset HEAD --
+    last = log -1 HEAD
+    visual = !gitk
+    history = log --graph --decorate --oneline
+    files = diff-tree --no-commit-id --name-only -r
+
+[help]
+    autocorrect = 1
+
+[url "https://"]
+    insteadOf = git://
+
+[credential]
+    helper = cache --timeout=3600
+
+[security]
+    fsckObjects = true
