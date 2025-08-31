@@ -1,0 +1,16 @@
+FROM node:18-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install MCP memory server
+RUN npm install -g @modelcontextprotocol/server-memory
+
+# Create data directory
+RUN mkdir -p /app/data
+
+CMD ["npx", "@modelcontextprotocol/server-memory"]

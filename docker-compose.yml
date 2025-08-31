@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"  # Backend API
+      - "5173:5173"  # Frontend development
+      - "5900:5900"  # VNC
+      - "8080:8080"  # VS Code Server
+      - "9222:9222"  # Chrome DevTools
+    volumes:
+      - .:/workspace
+      - vscode-extensions:/root/.local/share/code-server/extensions
+      - vscode-user-data:/root/.local/share/code-server/User
+    environment:
+      - CODE_SERVER_PASSWORD=${CODE_SERVER_PASSWORD:-password}
+      - WORKSPACE_DOMAIN=${WORKSPACE_DOMAIN:-localhost}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/frontend/node_modules
+      - shared_memory:/dev/shm  # Shared memory for browser automation
+    environment:
+      - NODE_ENV=development
+      - DISPLAY=:99
+      - REDIS_URL=redis://redis:6379
+      - MONGODB_URL=mongodb://mongodb:27017/async
+      - POSTGRES_URL=postgres://postgres:postgres@postgres:5432/async
+      - CHROME_PATH=/usr/bin/google-chrome
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - redis
+      - mongodb
+      - postgres
+      - ollama
+    privileged: true  # Required for chrome sandbox
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=async
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  mcp-everything:
+    image: mcp/everything
+    restart: unless-stopped
+    environment:
+      - DISPLAY=:99
+    volumes:
+      - shared_memory:/dev/shm
+
+  mcp-fetch:
+    image: mcp/fetch
+    restart: unless-stopped
+
+  mcp-puppeteer:
+    image: mcr.microsoft.com/playwright:latest
+    command: npx @modelcontextprotocol/server-puppeteer
+    environment:
+      - DISPLAY=:99
+    volumes:
+      - shared_memory:/dev/shm
+
+  mcp-playwright:
+    image: mcr.microsoft.com/playwright:latest
+    command: npx @executeautomation/playwright-mcp-server
+    environment:
+      - DISPLAY=:99
+    volumes:
+      - shared_memory:/dev/shm
+
+  mcp-filesystem:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp-filesystem
+    command: npx @modelcontextprotocol/server-filesystem /app/data
+    volumes:
+      - ./data:/app/data
+
+  mcp-memory:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp-memory
+    command: npx @modelcontextprotocol/server-memory
+    environment:
+      - MEMORY_FILE_PATH=/app/data/memory.json
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  redis_data:
+  mongodb_data:
+  postgres_data:
+  ollama_data:
+  shared_memory:
