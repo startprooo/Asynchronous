@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "chat": {
+    "pullRequestDescriptionGeneration": {
+      "instructions": [
+        {
+          "text": "Always include a list of key changes following this format:",
+          "structure": [
+            "## 🔄 Changes",
+            "- **Core Changes**",
+            "  - List architectural/system-level changes",
+            "- **Features**",
+            "  - List new features/capabilities",
+            "- **Fixes**",
+            "  - List bug fixes/improvements",
+            "- **Dependencies**",
+            "  - List dependency updates",
+            "## 🧪 Testing",
+            "- List affected test scenarios",
+            "- Document new test cases",
+            "## 📝 Notes",
+            "- Additional context/considerations"
+          ]
+        }
+      ]
+    },
+    "reviewSelection": {
+      "instructions": [
+        {
+          "file": "guidance/backend-review-guidelines.md",
+          "description": "Backend code review guidelines focusing on architecture, API design, agent system, MCP integration, state management, testing, security, and performance."
+        },
+        {
+          "file": "guidance/frontend-review-guidelines.md",
+          "description": "Frontend code review guidelines focusing on Next.js architecture, component structure, state management, styling, performance, real-time features, testing, and accessibility."
+        }
+      ]
+    }
+  }
+}

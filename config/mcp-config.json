@@ -1,5 +1,10 @@
 {
   "mcpServers": {
+    "typestyle": {
+      "command": "node",
+      "args": ["./src/mcp/servers/typestyle/index.js"],
+      "env": {}
+    },
     "everything": {
       "command": "docker",
       "args": ["run", "-i", "--rm", "mcp/everything"]

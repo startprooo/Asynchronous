@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  alpine-desktop:
+    image: qemux/qemu-arm
+    environment:
+      - BOOT=alpine
+      - VGA=virtio-gpu
+      - RAM_SIZE=4G
+      - CPU_CORES=2
+      - DISK_SIZE=16G
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "1111:11111"    # Instance Portal
+      - "5900:5900"     # x11vnc
+      - "6100:16100"    # Selkies Desktop
+      - "6200:16200"    # Guacamole VNC
+      - "8384:18384"    # Syncthing
+      - "8080:8080"     # Jupyter
+    volumes:
+      - ./storage:/storage
+    restart: unless-stopped
