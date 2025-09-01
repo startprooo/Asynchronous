@@ -11,22 +11,22 @@ services:
       - "5900:5900"  # VNC
       - "8080:8080"  # VS Code Server
       - "9222:9222"  # Chrome DevTools
-    volumes:
-      - .:/workspace
-      - vscode-extensions:/root/.local/share/code-server/extensions
-      - vscode-user-data:/root/.local/share/code-server/User
-    environment:
-      - CODE_SERVER_PASSWORD=${CODE_SERVER_PASSWORD:-password}
-      - WORKSPACE_DOMAIN=${WORKSPACE_DOMAIN:-localhost}
+      - "12434:12434" # Docker Model Runner TCP
     volumes:
       - .:/app
       - /app/node_modules
       - /app/frontend/node_modules
       - shared_memory:/dev/shm  # Shared memory for browser automation
+      - vscode-extensions:/root/.local/share/code-server/extensions
+      - vscode-user-data:/root/.local/share/code-server/User
+      - /var/run/docker.sock:/var/run/docker.sock # Docker socket for DMR
+      - ~/.docker:/root/.docker # Docker config for DMR
     environment:
       - NODE_ENV=development
       - DISPLAY=:99
       - REDIS_URL=redis://redis:6379
+      - CODE_SERVER_PASSWORD=${CODE_SERVER_PASSWORD:-password}
+      - WORKSPACE_DOMAIN=${WORKSPACE_DOMAIN:-localhost}
       - MONGODB_URL=mongodb://mongodb:27017/async
       - POSTGRES_URL=postgres://postgres:postgres@postgres:5432/async
       - CHROME_PATH=/usr/bin/google-chrome

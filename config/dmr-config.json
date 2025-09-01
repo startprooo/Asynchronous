@@ -1,0 +1,10 @@
+{
+  "host": "unix:///var/run/docker.sock",
+  "tcp_enabled": true,
+  "tcp_port": 12434,
+  "cors_allow_origins": ["http://localhost:3000"],
+  "model_runner": {
+    "base_url": "http://localhost:12434",
+    "timeout": 300
+  }
+}
